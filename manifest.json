@@ -13,5 +13,8 @@
   ],
   "background": {
     "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "点击抓取订单"
   }
 }
