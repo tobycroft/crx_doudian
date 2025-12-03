@@ -2,19 +2,21 @@
   "manifest_version": 3,
   "name": "tuuz_doudian",
   "version": "1.0",
-  "description": "测试抖店订单接口",
+  "description": "抖店订单助手",
   "permissions": [
     "cookies",
     "storage",
-    "activeTab"
+    "alarms",
+    "tabs"
   ],
   "host_permissions": [
     "*://*/*"
   ],
+  "action": {
+    "default_title": "抖店助手",
+    "default_popup": "popup/popup.html"
+  },
   "background": {
     "service_worker": "background.js"
-  },
-  "action": {
-    "default_title": "点击拉取订单"
   }
 }

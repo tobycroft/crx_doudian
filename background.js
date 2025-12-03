@@ -1,26 +1,50 @@
-chrome.action.onClicked.addListener(() => {
-    console.log("插件图标被点击，开始抓取订单…");
+console.log("后台启动");
 
-    const url = "https://fxg.jinritemai.com/api/order/searchlist?page=0&pageSize=10&compact_time%5Bselect%5D=create_time_start%2Ccreate_time_end&order_by=create_time&order=desc&tab=all";
+// popup 请求抓订单
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.action === "fetchOrders") {
+        fetchOrders().then(data => sendResponse(data));
+        return true; // 异步响应
+    }
 
-    fetch(url, {
-        method: "GET",
-        credentials: "include"   // ⬅⬅ 必须带上，才能附带抖店登录 cookie
-    })
-        .then(async res => {
-            console.log("状态码：", res.status);
-
-            let text = await res.text();
-            console.log("响应内容：", text);
-
-            try {
-                let json = JSON.parse(text);
-                console.log("JSON 解析：", json);
-            } catch (e) {
-                console.log("返回不是 JSON");
-            }
-        })
-        .catch(err => {
-            console.error("请求失败：", err);
-        });
+    if (msg.action === "checkLogin") {
+        checkLogin().then(data => sendResponse(data));
+        return true;
+    }
 });
+
+// 实际抓订单
+async function fetchOrders() {
+    try {
+        const url = "https://fxg.jinritemai.com/api/order/searchlist?page=0&pageSize=10";
+
+        const res = await fetch(url, { credentials: "include" });
+        const json = await res.json();
+
+        console.log("抓单成功：", json);
+
+        return json;
+    } catch (err) {
+        console.error("抓单失败", err);
+        return { error: err.toString() };
+    }
+}
+
+// 检查抖店是否登录
+async function checkLogin() {
+    try {
+        let cookies = await chrome.cookies.getAll({
+            domain: "jinritemai.com"
+        });
+
+        let session = cookies.find(c => c.name === "sessionid");
+
+        return {
+            loggedIn: !!session,
+            username: session ? "已登录账号（无法直接取用户名）" : null
+        };
+
+    } catch (e) {
+        return { loggedIn: false };
+    }
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>抖店助手</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+<div id="tabs">
+    <button class="tab active" data-tab="debug">Debug</button>
+    <button class="tab" data-tab="login">账号</button>
+</div>
+
+<div id="content">
+    <div class="tab-page active" id="debug">
+        <h3>调试中心</h3>
+        <button id="btnFetch">立即抓取订单</button>
+        <pre id="logBox"></pre>
+    </div>
+
+    <div class="tab-page" id="login">
+        <h3>账号状态</h3>
+        <div id="loginInfo">加载中...</div>
+        <button id="btnCheckLogin">检查登录状态</button>
+    </div>
+</div>
+
+<script src="../common/util.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
