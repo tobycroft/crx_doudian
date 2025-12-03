@@ -2,19 +2,19 @@
   "manifest_version": 3,
   "name": "tuuz_doudian",
   "version": "1.0",
-  "description": "获取抖店订单数据，获取商品数据，自动推荐合适的优惠券方案供运营一键使用",
+  "description": "测试抖店订单接口",
   "permissions": [
     "cookies",
-    "alarms",
-    "storage"
+    "storage",
+    "activeTab"
   ],
   "host_permissions": [
-    "https://*.jinritemai.com/*"
+    "*://*/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "点击抓取订单"
+    "default_title": "点击拉取订单"
   }
 }
