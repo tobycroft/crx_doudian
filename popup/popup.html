@@ -17,24 +17,28 @@
     <!-- 登录/注册/用户信息 -->
     <div class="tab-page active" id="login">
         <h3>账号中心</h3>
-
+        <!--这里就是已经登录后用来加载登录信息的部分-->
+        <div id="userInfoView" class="view" style="display:none;">
+            <div id="userInfoText">加载中...</div>
+            <div id="userDetails">
+                <p>用户名: <span id="userName"></span></p>
+                <p>邮箱: <span id="userEmail"></span></p>
+            </div>
+            <button id="btnLogout">退出登录</button>
+        </div>
         <!-- 登录界面 -->
         <div id="loginView" class="view">
-
             <h4>账号登录</h4>
             <input id="loginAccount" placeholder="账号">
             <input id="loginPassword" placeholder="密码" type="text">
-            <input id="loginPassword" placeholder="密码" type="password">
+            <img id="captchaImg" src="">
+            <input id="captcha" placeholder="填写验证码" type="password">
 
             <label><input type="checkbox" id="stayOnline"> 保持在线</label>
             <button id="btnLogin">登录</button>
         </div>
 
 
-        <div id="userInfoView" class="view" style="display:none;">
-            <div id="userInfoText">加载中...</div>
-            <button id="btnLogout">退出登录</button>
-        </div>
     </div>
 
     <!-- Debug 页面 -->
