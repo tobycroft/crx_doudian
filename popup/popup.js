@@ -145,3 +145,4 @@ function appendLog(msg) {
  * 初始化：启动时检查是否登录
  *********************************/
 loadUserInfo();
+
