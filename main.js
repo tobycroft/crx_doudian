@@ -1,24 +1,15 @@
 console.log("后台启动");
 
-// popup 请求抓订单
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.action === "fetchOrders") {
-        fetchOrders().then(data => sendResponse(data));
-        return true; // 异步响应
-    }
-
-    if (msg.action === "checkLogin") {
-        checkLogin().then(data => sendResponse(data));
-        return true;
-    }
-});
+importScripts(
+    "service.js",
+);
 
 // 实际抓订单
 async function fetchOrders() {
     try {
         const url = "https://fxg.jinritemai.com/api/order/searchlist?page=0&pageSize=10";
 
-        const res = await fetch(url, { credentials: "include" });
+        const res = await fetch(url, {credentials: "include"});
         const json = await res.json();
 
         console.log("抓单成功：", json);
@@ -26,7 +17,7 @@ async function fetchOrders() {
         return json;
     } catch (err) {
         console.error("抓单失败", err);
-        return { error: err.toString() };
+        return {error: err.toString()};
     }
 }
 
@@ -45,6 +36,6 @@ async function checkLogin() {
         };
 
     } catch (e) {
-        return { loggedIn: false };
+        return {loggedIn: false};
     }
 }
