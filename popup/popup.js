@@ -11,23 +11,18 @@ document.querySelectorAll(".tab").forEach(tab => {
 });
 
 /*********************************
- * 登录/注册视图切换
+ * 登录/注册界面切换
  *********************************/
 function showView(id) {
     document.querySelectorAll("#login .view").forEach(v => v.style.display = "none");
     document.getElementById(id).style.display = "block";
 }
 
-document.getElementById("gotoRegister").onclick = () => {
-    showView("registerView");
-};
-
-document.getElementById("gotoLogin").onclick = () => {
-    showView("loginView");
-};
+document.getElementById("gotoRegister").onclick = () => showView("registerView");
+document.getElementById("gotoLogin").onclick = () => showView("loginView");
 
 /*********************************
- * 登录逻辑
+ * ======= 账号密码登录 =======
  *********************************/
 document.getElementById("btnLogin").onclick = () => {
     const account = document.getElementById("loginAccount").value.trim();
@@ -39,37 +34,94 @@ document.getElementById("btnLogin").onclick = () => {
         return;
     }
 
-    chrome.runtime.sendMessage(
-        {
-            action: "login",
-            account,
-            password,
-            stay
-        },
-        (resp) => {
-            if (!resp) {
-                alert("后台无响应（可能是报错）");
-                return;
-            }
-
-            if (resp.success) {
-                loadUserInfo();
-            } else {
-                alert(resp.msg || "登录失败");
-            }
+    chrome.runtime.sendMessage({
+        action: "login",
+        account,
+        password,
+        stay
+    }, resp => {
+        if (!resp) {
+            alert("后台无响应");
+            return;
         }
-    );
+        if (resp.success) {
+            loadUserInfo();
+        } else {
+            alert(resp.msg || "登录失败");
+        }
+    });
 };
 
 /*********************************
- * 注册逻辑
+ * ======= 邮箱验证码 登录 =======
  *********************************/
+document.getElementById("btnSendLoginCode").onclick = () => {
+    const email = document.getElementById("emailLoginInput").value.trim();
+    if (!email) {
+        alert("请输入邮箱");
+        return;
+    }
+
+    chrome.runtime.sendMessage({
+        action: "sendEmailCodeLogin",  // ★ 留给你实现
+        email
+    }, resp => {
+        if (resp && resp.success) {
+            alert("验证码已发送");
+        } else {
+            alert(resp?.msg || "发送失败");
+        }
+    });
+};
+
+document.getElementById("btnEmailLogin").onclick = () => {
+    const email = document.getElementById("emailLoginInput").value.trim();
+    const code = document.getElementById("emailLoginCode").value.trim();
+
+    if (!email || !code) {
+        alert("请输入邮箱和验证码");
+        return;
+    }
+
+    chrome.runtime.sendMessage({
+        action: "loginByEmail",  // ★ 留给你实现
+        email,
+        code
+    }, resp => {
+        if (resp?.success) {
+            loadUserInfo();
+        } else {
+            alert(resp?.msg || "验证码登录失败");
+        }
+    });
+};
+
+/*********************************
+ * ======= 注册 （账号+密码+邮箱验证码） =======
+ *********************************/
+document.getElementById("btnSendRegCode").onclick = () => {
+    const email = document.getElementById("regEmail").value.trim();
+    if (!email) {
+        alert("请输入邮箱");
+        return;
+    }
+
+    chrome.runtime.sendMessage({
+        action: "sendEmailCodeRegister",  // ★ 留给你实现
+        email
+    }, resp => {
+        alert(resp?.success ? "验证码已发送" : (resp?.msg || "发送失败"));
+    });
+};
+
 document.getElementById("btnRegister").onclick = () => {
     const acc = document.getElementById("regAccount").value.trim();
     const p1 = document.getElementById("regPass1").value.trim();
     const p2 = document.getElementById("regPass2").value.trim();
+    const email = document.getElementById("regEmail").value.trim();
+    const code = document.getElementById("regEmailCode").value.trim();
 
-    if (!acc || !p1 || !p2) {
+    if (!acc || !p1 || !p2 || !email || !code) {
         alert("请填写完整注册信息");
         return;
     }
@@ -78,38 +130,30 @@ document.getElementById("btnRegister").onclick = () => {
         return;
     }
 
-    chrome.runtime.sendMessage(
-        {
-            action: "register",
-            account: acc,
-            password: p1
-        },
-        (resp) => {
-            if (resp.success) {
-                alert("注册成功，请登录");
-                showView("loginView");
-            } else {
-                alert(resp.msg || "注册失败");
-            }
+    chrome.runtime.sendMessage({
+        action: "registerWithEmail",  // ★ 留给你实现
+        account: acc,
+        password: p1,
+        email,
+        code
+    }, resp => {
+        if (resp?.success) {
+            alert("注册成功，请登录");
+            showView("loginView");
+        } else {
+            alert(resp?.msg || "注册失败");
         }
-    );
+    });
 };
 
 /*********************************
- * 加载用户信息（自动登录）
+ * 检查登录状态（自动登录）
  *********************************/
 function loadUserInfo() {
     chrome.runtime.sendMessage({ action: "checkLogin" }, (resp) => {
-        if (!resp) {
-            alert("后台无响应");
-            return;
-        }
-
-        if (resp.loggedIn) {
-            // 显示用户信息
+        if (resp?.loggedIn) {
             document.getElementById("userInfoText").innerText =
                 "当前账号：" + resp.username;
-
             showView("userInfoView");
         } else {
             showView("loginView");
@@ -127,7 +171,7 @@ document.getElementById("btnLogout").onclick = () => {
 };
 
 /*********************************
- * Debug 按钮
+ * Debug 调试
  *********************************/
 document.getElementById("btnFetch").onclick = () => {
     chrome.runtime.sendMessage({ action: "fetchOrders" }, (resp) => {
@@ -142,7 +186,6 @@ function appendLog(msg) {
 }
 
 /*********************************
- * 初始化：启动时检查是否登录
+ * 启动自动检查登录状态
  *********************************/
 loadUserInfo();
-
