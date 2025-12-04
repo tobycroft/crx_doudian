@@ -8,9 +8,6 @@ importScripts(
 const Actions = {
     fetchOrders,
     checkLogin,
-    getCoupon,
-    syncOrders,
-    // 未来无限扩展
 };
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
