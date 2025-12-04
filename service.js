@@ -1,15 +1,27 @@
 importScripts(
-    "service/service.main.js",
+    "service/fetchOrders.js",
+    "service/checkLogin.js",
 );
-// popup 请求抓订单
+
+const Actions = {
+    fetchOrders,
+    checkLogin,
+    getCoupon,
+    syncOrders,
+    // 未来无限扩展
+};
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.action === "fetchOrders") {
-        fetchOrders().then(data => sendResponse(data));
-        return true; // 异步响应
+    const fn = Actions[msg.action];
+
+    if (!fn) {
+        sendResponse({error: "Unknown action: " + msg.action});
+        return;
     }
 
-    if (msg.action === "checkLogin") {
-        checkLogin().then(data => sendResponse(data));
-        return true;
-    }
+    Promise.resolve(fn(msg.data))
+        .then(res => sendResponse({ok: true, data: res}))
+        .catch(err => sendResponse({ok: false, error: err.toString()}));
+
+    return true; // 异步
 });
