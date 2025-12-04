@@ -8,22 +8,54 @@
 <body>
 
 <div id="tabs">
-    <button class="tab active" data-tab="debug">Debug</button>
-    <button class="tab" data-tab="login">账号</button>
+    <button class="tab active" data-tab="login">账号</button>
+    <button class="tab" data-tab="debug">Debug</button>
 </div>
 
 <div id="content">
-    <div class="tab-page active" id="debug">
+
+    <!-- 登录/注册/用户信息 -->
+    <div class="tab-page active" id="login">
+        <h3>账号中心</h3>
+
+        <div id="loginView" class="view">
+            <input id="loginAccount" placeholder="账号">
+            <input id="loginPassword" type="password" placeholder="密码">
+
+            <label>
+                <input type="checkbox" id="stayOnline"> 保持在线
+            </label>
+
+            <button id="btnLogin">登录</button>
+            <p>
+                还没有账号？<a href="#" id="gotoRegister">注册</a>
+            </p>
+        </div>
+
+        <div id="registerView" class="view" style="display:none;">
+            <input id="regAccount" placeholder="账号">
+            <input id="regPass1" type="password" placeholder="密码">
+            <input id="regPass2" type="password" placeholder="重复密码">
+
+            <button id="btnRegister">注册</button>
+            <p>
+                已有账号？<a href="#" id="gotoLogin">返回登录</a>
+            </p>
+        </div>
+
+        <div id="userInfoView" class="view" style="display:none;">
+            <div id="userInfoText">加载中...</div>
+            <button id="btnLogout">退出登录</button>
+        </div>
+    </div>
+
+    <!-- Debug 页面 -->
+    <div class="tab-page" id="debug">
         <h3>调试中心</h3>
         <button id="btnFetch">立即抓取订单</button>
         <pre id="logBox"></pre>
     </div>
 
-    <div class="tab-page" id="login">
-        <h3>账号状态</h3>
-        <div id="loginInfo">加载中...</div>
-        <button id="btnCheckLogin">检查登录状态</button>
-    </div>
 </div>
 
 <script src="../common/util.js"></script>
