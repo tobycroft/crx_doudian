@@ -18,29 +18,39 @@
     <div class="tab-page active" id="login">
         <h3>账号中心</h3>
 
+        <!-- 登录界面 -->
         <div id="loginView" class="view">
-            <input id="loginAccount" placeholder="账号">
-            <input id="loginPassword" type="password" placeholder="密码">
+            <h4>邮箱验证码登录</h4>
+            <input id="emailLoginInput" placeholder="邮箱">
+            <div style="display:flex; gap:5px;">
+                <input id="emailLoginCode" placeholder="验证码" style="flex:1;">
+                <button id="btnSendLoginCode" style="width:90px;">发送验证码</button>
+            </div>
+            <button id="btnEmailLogin">邮箱登录</button>
 
-            <label>
-                <input type="checkbox" id="stayOnline"> 保持在线
-            </label>
-
-            <button id="btnLogin">登录</button>
-            <p>
-                还没有账号？<a href="#" id="gotoRegister">注册</a>
+            <p style="margin-top:10px;cursor:pointer;color:dodgerblue;" id="gotoRegister">
+                没有账号？注册 →
             </p>
         </div>
 
-        <div id="registerView" class="view" style="display:none;">
+        <div id="registerView" class="view">
+            <h4>账号注册</h4>
             <input id="regAccount" placeholder="账号">
-            <input id="regPass1" type="password" placeholder="密码">
-            <input id="regPass2" type="password" placeholder="重复密码">
+            <input id="regPass1" placeholder="密码" type="password">
+            <input id="regPass2" placeholder="重复密码" type="password">
+
+            <hr>
+
+            <h4>邮箱验证</h4>
+            <input id="regEmail" placeholder="邮箱">
+            <div style="display:flex; gap:5px;">
+                <input id="regEmailCode" placeholder="验证码" style="flex:1;">
+                <button id="btnSendRegCode" style="width:90px;">发送验证码</button>
+            </div>
 
             <button id="btnRegister">注册</button>
-            <p>
-                已有账号？<a href="#" id="gotoLogin">返回登录</a>
-            </p>
+
+            <p style="margin-top:10px;cursor:pointer;color:dodgerblue;" id="gotoLogin">返回登录</p>
         </div>
 
         <div id="userInfoView" class="view" style="display:none;">
