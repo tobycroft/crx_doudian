@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(() => {
                 // 出错仍显示默认图，不报错
-                captchaImg.src = "captcha_default.png";
+                captchaImg.src = "loading.png";
             });
     }
 
@@ -43,18 +43,18 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-            const resp = await fetch(BASE_URL + "/v1/user/login/login", {
+            const resp = await fetch(BASE_URL + "/v1/user/login/auto", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)
             });
 
             const data = await resp.json();
 
-            if (data.success) {
-                alert("登录成功");
+            if (data.code === 0) {
+                alert(data.echo);
             } else {
-                alert(data.msg || "登录失败");
+                alert(data.echo || "登录失败");
                 loadCaptcha();
             }
 
