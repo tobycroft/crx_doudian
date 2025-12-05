@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ======== 加载验证码 JSON → base64 转图片 =========
     function loadCaptcha() {
         // 加载中先显示默认图，不影响打开速度
-        captchaImg.src = "captcha_default.png";
+        captchaImg.src = "loading.png";
 
         // 异步请求，不阻塞 popup
         fetch(BASE_URL + "/v1/user/login/captcha?" + Date.now())
