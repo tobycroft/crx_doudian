@@ -2,54 +2,45 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>抖店助手</title>
-    <link rel="stylesheet" href="popup.css">
+    <title>登录</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 10px;
+            width: 260px;
+        }
+
+        input, button {
+            width: 100%;
+            margin-top: 6px;
+            padding: 6px;
+        }
+
+        img {
+            width: 100%;
+            margin-top: 6px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-<div id="tabs">
-    <button class="tab active" data-tab="login">账号</button>
-    <button class="tab" data-tab="debug">Debug</button>
-</div>
+<h3>账号登录</h3>
 
-<div id="content">
+<input id="loginAccount" placeholder="邮箱账号" type="email">
+<input id="loginPassword" placeholder="密码" type="password">
 
-    <!-- 登录/注册/用户信息 -->
-    <div class="tab-page active" id="login">
-        <h3>账号中心</h3>
-        <div id="userInfoView" class="view" style="display:none;">
-            <div id="userInfoText">加载中...</div>
-            <div id="userDetails">
-                <p>用户名: <span id="userName"></span></p>
-                <p>邮箱: <span id="userEmail"></span></p>
-            </div>
-            <button id="btnLogout">退出登录</button>
-        </div>
-        <!-- 登录界面 -->
-        <div id="loginView" class="view">
-            <h4>账号登录</h4>
-            <input id="mail" placeholder="邮箱账号" type="email">
-            <input id="loginPassword" placeholder="密码" type="text">
-            <img id="captchaImg" src="">
-            <input id="captcha" placeholder="填写验证码" type="password">
+<!-- 验证码 -->
+<img id="captchaImg" title="验证码加载中...">
 
-            <label><input type="checkbox" id="stayOnline"> 保持在线</label>
-            <button id="btnLogin">登录</button>
-        </div>
+<input id="captcha" placeholder="验证码" type="text">
 
+<label>
+    <input type="checkbox" id="stayOnline"> 保持在线
+</label>
 
-    </div>
+<button id="btnLogin">登录</button>
 
-    <!-- Debug 页面 -->
-    <div class="tab-page" id="debug">
-        <h3>调试中心</h3>
-        <button id="btnFetch">立即抓取订单</button>
-        <pre id="logBox"></pre>
-    </div>
-
-</div>
-
-<script src="../common/util.js"></script>
 <script src="popup.js"></script>
 </body>
 </html>
