@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         captchaImg.src = "captcha_default.png";
 
         // 异步请求，不阻塞 popup
-        fetch(BASE_URL + "/v1/index/captcha/get?" + Date.now())
+        fetch(BASE_URL + "/v1/user/login/captcha?" + Date.now())
             .then(resp => resp.json())
             .then(data => {
                 if (data?.data?.img) {
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-            const resp = await fetch(BASE_URL + "/v1/login", {
+            const resp = await fetch(BASE_URL + "/v1/user/login/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body)

@@ -7,17 +7,17 @@
         body {
             font-family: sans-serif;
             margin: 10px;
-            width: 260px;
+            width: 300px;
         }
 
         input, button {
-            width: 100%;
+            width: 95%;
             margin-top: 6px;
             padding: 6px;
         }
 
         img {
-            width: 100%;
+            width: 95%;
             margin-top: 6px;
             cursor: pointer;
         }
@@ -25,10 +25,11 @@
 </head>
 <body>
 
-<h3>账号登录</h3>
-
+<h1>账号登录</h1>
+<h4>为了保证隐私，请使用邮箱注册</h4>
+<h5>注册时将不验证，但是账号会自动注销，如果确定使用本系统，请验证邮箱成为正式免费用户</h5>
 <input id="loginAccount" placeholder="邮箱账号" type="email">
-<input id="loginPassword" placeholder="密码" type="password">
+<input id="loginPassword" placeholder="密码如果未注册就会自动注册" type="text">
 
 <!-- 验证码 -->
 <img id="captchaImg" title="验证码加载中...">
