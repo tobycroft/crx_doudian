@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // 未登录状态
         showLogin();
         loadCaptcha();
+
     }
 
     /* ========== UI 切换 ========== */
@@ -52,6 +53,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         loginBox.style.display = "none";
         userBox.style.display = "block";
+    }
+
+    btnStatus.onclick = async () => {
+        let switch_status = await chrome.storage.sync.get(["switch_status"]);
+        if (switch_status.switch_status === 1) {
+            await chrome.storage.sync.set({switch_status: 0});
+        } else {
+            await chrome.storage.sync.set({switch_status: 1});
+        }
+        showStatus();
+    }
+
+    async function showStatus() {
+        let switch_status = await chrome.storage.sync.get(["switch_status"]);
+        console.log("switch:", switch_status);
+        if (switch_status.switch_status === 1) {
+            document.getElementById("switch_status").innerText = "☑️";
+        } else {
+            document.getElementById("switch_status").innerText = "❌";
+        }
     }
 
     /* ========== userinfo 校验 ========== */
@@ -70,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (data.code === 0) {
                 showUser(data.data);
+                showStatus();
                 return true;
             }
         } catch (err) {

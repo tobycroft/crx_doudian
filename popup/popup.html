@@ -127,11 +127,12 @@
     <h4>为了保证隐私，请使用邮箱注册</h4>
     <h5>注册时将不验证，但是账号会自动注销，如果确定使用本系统，请验证邮箱成为正式免费用户</h5>
 
-    <input id="loginAccount" type="email" placeholder="邮箱账号">
-    <input id="loginPassword" type="text" placeholder="密码如果未注册就会自动注册">
+    <label for="loginAccount">邮箱账号：</label><input id="loginAccount" type="email" placeholder="邮箱账号">
+    <label for="loginPassword">密码：</label><input id="loginPassword" type="text"
+                                                   placeholder="密码如果未注册就会自动注册">
 
-    <img id="captchaImg" src="loading.png" title="点击刷新验证码">
-
+    <label for="captcha">验证码：</label>
+    <img id="captchaImg" src="loading.png" title="点击刷新验证码" alt="yzm">
     <input id="captcha" type="text" placeholder="验证码">
 
     <label>
@@ -148,6 +149,12 @@
     <div>UID：<span id="ui_uid"></span></div>
     <div>邮箱：<span id="ui_mail"></span></div>
     <button id="btnLogout">退出登录</button>
+
+    <h3>抖店总开关</h3>
+    <div>开关状态：
+        <span id="switch_status"></span>
+    </div>
+    <button id="btnStatus">抖店-开/关</button>
 </div>
 
 <script src="popup.js"></script>
