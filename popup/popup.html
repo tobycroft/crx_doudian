@@ -1,46 +1,154 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <title>登录</title>
+    <meta charset="UTF-8">
+    <title>账号登录</title>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: sans-serif;
-            margin: 10px;
-            width: 300px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+            Roboto, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            margin: 0;
+            padding: 12px;
+            width: 320px;
+            background: #f7f8fa;
         }
 
-        input, button {
-            width: 95%;
-            margin-top: 6px;
-            padding: 6px;
+        h1 {
+            font-size: 18px;
+            margin: 0 0 6px 0;
         }
 
-        img {
-            width: 95%;
-            margin-top: 6px;
+        h4 {
+            font-size: 13px;
+            font-weight: normal;
+            margin: 4px 0;
+            color: #555;
+        }
+
+        h5 {
+            font-size: 12px;
+            font-weight: normal;
+            margin: 4px 0 10px 0;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        input[type="email"],
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            font-size: 14px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #409eff;
+        }
+
+        img#captchaImg {
+            width: 100%;
+            height: 40px;
+            margin-top: 8px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
             cursor: pointer;
+            background: #fff;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        label input {
+            margin-right: 6px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px;
+            font-size: 14px;
+            background: #409eff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #337ecc;
+        }
+
+        #userBox {
+            background: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        #userBox h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+        }
+
+        #userBox div {
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        #btnLogout {
+            background: #f56c6c;
+        }
+
+        #btnLogout:hover {
+            background: #dd6161;
         }
     </style>
 </head>
+
 <body>
 
-<h1>账号登录</h1>
-<h4>为了保证隐私，请使用邮箱注册</h4>
-<h5>注册时将不验证，但是账号会自动注销，如果确定使用本系统，请验证邮箱成为正式免费用户</h5>
-<input id="loginAccount" placeholder="邮箱账号" type="email">
-<input id="loginPassword" placeholder="密码如果未注册就会自动注册" type="text">
+<!-- 登录界面 -->
+<div id="loginBox" style="display:none">
+    <h1>账号登录</h1>
+    <h4>为了保证隐私，请使用邮箱注册</h4>
+    <h5>注册时将不验证，但是账号会自动注销，如果确定使用本系统，请验证邮箱成为正式免费用户</h5>
 
-<!-- 验证码 -->
-<img id="captchaImg" src="loading.png" title="验证码加载中...">
+    <input id="loginAccount" type="email" placeholder="邮箱账号">
+    <input id="loginPassword" type="text" placeholder="密码如果未注册就会自动注册">
 
-<input id="captcha" placeholder="验证码" type="text">
+    <img id="captchaImg" src="loading.png" title="点击刷新验证码">
 
-<label>
-    <input type="checkbox" id="stayOnline"> 保持在线
-</label>
+    <input id="captcha" type="text" placeholder="验证码">
 
-<button id="btnLogin">登录</button>
+    <label>
+        <input type="checkbox" id="stayOnline">
+        保持在线
+    </label>
+
+    <button id="btnLogin">登录</button>
+</div>
+
+<!-- 用户信息界面 -->
+<div id="userBox" style="display:none">
+    <h3>用户信息</h3>
+    <div>UID：<span id="ui_uid"></span></div>
+    <div>邮箱：<span id="ui_mail"></span></div>
+    <button id="btnLogout">退出登录</button>
+</div>
 
 <script src="popup.js"></script>
 </body>

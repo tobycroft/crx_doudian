@@ -1,55 +1,121 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const BASE_URL = "http://127.0.0.1";
+
+    /* ========== DOM ========== */
+    const loginBox = document.getElementById("loginBox");
+    const userBox = document.getElementById("userBox");
+
+    const loginAccount = document.getElementById("loginAccount");
+    const loginPassword = document.getElementById("loginPassword");
     const captchaImg = document.getElementById("captchaImg");
+    const captchaInput = document.getElementById("captcha");
+    const stayOnline = document.getElementById("stayOnline");
 
-    // 页面加载后异步刷新验证码
-    setTimeout(loadCaptcha, 0);
+    const btnLogin = document.getElementById("btnLogin");
+    const btnLogout = document.getElementById("btnLogout");
 
-    // 点击刷新验证码
-    captchaImg.onclick = () => loadCaptcha();
+    const uiUid = document.getElementById("ui_uid");
+    const uiMail = document.getElementById("ui_mail");
 
-    // 点击登录
-    document.getElementById("btnLogin").onclick = () => doLogin();
     let ident = "";
 
-    // ======== 加载验证码 JSON → base64 转图片 =========
+    /* ========== 初始化入口 ========== */
+    init();
+
+    async function init() {
+
+        const {uid, token} = await chrome.storage.sync.get(["uid", "token"]);
+        // console.log("init:", uid, token);
+        if (uid && token) {
+            const ok = await checkUserInfo(uid, token);
+            if (ok) return;
+
+            // token 失效
+            await chrome.storage.sync.remove(["uid", "token"]);
+        }
+
+        // 未登录状态
+        showLogin();
+        loadCaptcha();
+    }
+
+    /* ========== UI 切换 ========== */
+    function showLogin() {
+        loginBox.style.display = "block";
+        userBox.style.display = "none";
+    }
+
+    function showUser(user) {
+        uiUid.innerText = user.id;
+        uiMail.innerText = user.mail;
+
+        loginBox.style.display = "none";
+        userBox.style.display = "block";
+    }
+
+    /* ========== userinfo 校验 ========== */
+    async function checkUserInfo(uid, token) {
+        try {
+            const resp = await fetch(BASE_URL + "/v1/user/info/get", {
+                method: "POST",
+                headers: {
+                    "uid": uid,
+                    "token": token
+                }
+            });
+
+            const data = await resp.json();
+            console.log("userinfo:", data);
+
+            if (data.code === 0) {
+                showUser(data.data);
+                return true;
+            }
+        } catch (err) {
+            console.error("userinfo error:", err);
+        }
+
+        return false;
+    }
+
+    /* ========== 验证码 ========== */
+    captchaImg.onclick = loadCaptcha;
+
     function loadCaptcha() {
-        // 加载中先显示默认图，不影响打开速度
         captchaImg.src = "loading.png";
 
-        // 异步请求，不阻塞 popup
         fetch(BASE_URL + "/v1/user/login/captcha?" + Date.now())
             .then(resp => resp.json())
             .then(data => {
-                console.log(data.data.ident);
                 if (data?.data?.img) {
-                    captchaImg.src = data.data.img; // base64 直接显示
+                    captchaImg.src = data.data.img;
                 }
-                ident = data.data.ident;
+                ident = data?.data?.ident || "";
             })
             .catch(() => {
-                // 出错仍显示默认图，不报错
                 captchaImg.src = "loading.png";
             });
     }
 
+    /* ========== 登录 ========== */
+    btnLogin.onclick = doLogin;
 
-    // ============= 登录 =============
     async function doLogin() {
-        const body = {
-            mail: loginAccount.value.trim(),
-            password: loginPassword.value.trim(),
-            captcha: captcha.value.trim(),
-            stay: stayOnline.checked,
-            ident: ident,
-        };
+        const mail = loginAccount.value.trim();
+        const password = loginPassword.value.trim();
+        const captcha = captchaInput.value.trim();
 
-        let fd = new FormData();
-        fd.append("mail", body.mail);
-        fd.append("password", body.password);
-        fd.append("ident", body.ident);
-        fd.append("code", body.captcha);
+        if (!mail || !password || !captcha) {
+            alert("请填写完整登录信息");
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append("mail", mail);
+        fd.append("password", password);
+        fd.append("ident", ident);
+        fd.append("code", captcha);
 
         try {
             const resp = await fetch(BASE_URL + "/v1/user/login/auto", {
@@ -58,14 +124,18 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const data = await resp.json();
-            console.log("loginret:", data);
+            console.log("login:", data);
+
             if (data.code === 0) {
-                if (stayOnline.checked) {
-                    chrome.storage.sync.set({"mail": body.mail});
-                }
-                chrome.storage.sync.set({"uid": data.data.uid});
-                chrome.storage.sync.set({"token": data.data.token});
-                alert(data.echo);
+                await chrome.storage.sync.set({
+                    uid: data.data.uid,
+                    token: data.data.token
+                });
+
+                showUser({
+                    id: data.data.uid,
+                    mail: mail
+                });
             } else {
                 alert(data.echo || "登录失败");
                 loadCaptcha();
@@ -75,5 +145,12 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("网络错误");
         }
     }
+
+    /* ========== 退出登录 ========== */
+    btnLogout.onclick = async () => {
+        await chrome.storage.sync.remove(["uid", "token"]);
+        showLogin();
+        loadCaptcha();
+    };
 
 });
