@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 点击登录
     document.getElementById("btnLogin").onclick = () => doLogin();
-
+    let ident = "";
 
     // ======== 加载验证码 JSON → base64 转图片 =========
     function loadCaptcha() {
@@ -22,9 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(BASE_URL + "/v1/user/login/captcha?" + Date.now())
             .then(resp => resp.json())
             .then(data => {
+                console.log(data.data.ident);
                 if (data?.data?.img) {
                     captchaImg.src = data.data.img; // base64 直接显示
                 }
+                ident = data.data.ident;
             })
             .catch(() => {
                 // 出错仍显示默认图，不报错
@@ -40,12 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
             password: loginPassword.value.trim(),
             captcha: captcha.value.trim(),
             stay: stayOnline.checked,
+            ident: ident,
         };
 
         let fd = new FormData();
         fd.append("mail", body.mail);
         fd.append("password", body.password);
-        fd.append("captcha", body.captcha);
+        fd.append("ident", body.ident);
+        fd.append("code", body.captcha);
 
         try {
             const resp = await fetch(BASE_URL + "/v1/user/login/auto", {
