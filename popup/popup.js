@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const uiUid = document.getElementById("ui_uid");
     const uiMail = document.getElementById("ui_mail");
+    const btnWS = document.getElementById("btnWS");
 
     let ident = "";
 
@@ -68,6 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
     async function showStatus() {
         let switch_status = await chrome.storage.sync.get(["switch_status"]);
         console.log("switch:", switch_status);
+        if (switch_status.switch_status === undefined) {
+            await chrome.storage.sync.set({switch_status: 0});
+            switch_status.switch_status = 0;
+        }
         if (switch_status.switch_status === 1) {
             document.getElementById("switch_status").innerText = "☑️";
         } else {
@@ -90,8 +95,10 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("userinfo:", data);
 
             if (data.code === 0) {
+                //在登录后开始执行比较好
                 showUser(data.data);
                 showStatus();
+                initWSStatus();
                 return true;
             }
         } catch (err) {
@@ -177,24 +184,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const wsStatusSpan = document.getElementById("ws_status");
 
-// 监听 main.js 发来的消息
-    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener((msg) => {
         if (msg.action === "wsStatus") {
             wsStatusSpan.innerText = msg.status;
         }
     });
 
-    async function requestWSStatus() {
-        chrome.runtime.sendMessage({action: "getWSStatus"}, (res) => {
-            if (res?.status) {
-                wsStatusSpan.innerText = res.status;
+    async function initWSStatus() {
+        console.log("getWSStatus")
+        chrome.runtime.sendMessage(
+            {action: "getWSStatus"},
+            (res) => {
+                if (res?.ok && res.data) {
+                    wsStatusSpan.innerText = res.data;
+                }
             }
-        });
+        );
     }
 
-// popup 打开时
-    document.addEventListener("DOMContentLoaded", () => {
-        requestWSStatus();
-    });
+    btnWS.onclick = () => {
+        chrome.runtime.sendMessage({action: "toggleWS"});
+    };
 
 });
