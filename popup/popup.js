@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (data.code === 0) {
                 //在登录后开始执行比较好
-                showUser(data.data);
+                showUser(data?.data);
                 showStatus();
                 initWSStatus();
                 return true;

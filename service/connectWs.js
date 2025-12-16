@@ -50,7 +50,7 @@ function connectWs() {
         ws = null;
 
         // 重连
-        setTimeout(webSocket, 5000);
+        setTimeout(connectWs, 5000);
     };
 }
 
@@ -64,7 +64,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 });
 
 function broadcastWSStatus() {
-    chrome.runtime.sendMessage({
-        action: "wsStatus", status: wsStatus
-    });
+    try{
+        chrome.runtime.sendMessage({
+            action: "wsStatus", status: wsStatus
+        });
+    }catch (e){
+        console.error("broadcastWSStatus error:", e);
+    }
+
 }
