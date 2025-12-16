@@ -191,18 +191,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function initWSStatus() {
         console.log("getWSStatus")
-        chrome.runtime.sendMessage(
-            {action: "getWSStatus"},
-            (res) => {
-                if (res?.ok && res.data) {
-                    wsStatusSpan.innerText = res.data;
+        try {
+            chrome.runtime.sendMessage(
+                {action: "getWSStatus"},
+                (res) => {
+                    if (res?.ok && res.data) {
+                        wsStatusSpan.innerText = res.data;
+                    }
                 }
-            }
-        );
+            );
+        } catch (err) {
+            console.error("initWSStatus error:", err);
+        }
     }
 
     btnWS.onclick = () => {
-        chrome.runtime.sendMessage({action: "toggleWS"});
+        try {
+            chrome.runtime.sendMessage({action: "toggleWS"});
+        } catch (err) {
+            console.error("initWS error:", err);
+        }
     };
 
 });
