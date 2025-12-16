@@ -36,17 +36,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // ============= 登录 =============
     async function doLogin() {
         const body = {
-            account: loginAccount.value.trim(),
+            mail: loginAccount.value.trim(),
             password: loginPassword.value.trim(),
             captcha: captcha.value.trim(),
             stay: stayOnline.checked,
         };
 
+        let fd = new FormData();
+        fd.append("mail", body.mail);
+        fd.append("password", body.password);
+        fd.append("captcha", body.captcha);
+
         try {
             const resp = await fetch(BASE_URL + "/v1/user/login/auto", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(body)
+                body: fd
             });
 
             const data = await resp.json();
