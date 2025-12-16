@@ -28,19 +28,23 @@ Actions.toggleWS = () => {
 };
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    // const fn = Actions[msg.action];
-    //
-    // if (!fn) {
-    //     sendResponse({error: "Unknown action: " + msg.action});
-    //     return;
-    // }
-    //
-    // Promise.resolve(fn(msg.data))
-    //     .then(res => sendResponse({ok: true, data: res}))
-    //     .catch(err => sendResponse({ok: false, error: err.toString()}));
-    //
-    // return true; // 异步
+    if (msg.action === "connectWs") {
+        connectWs();
+        sendResponse({ok: true});
+    }
+
+    const fn = Actions[msg.action];
+
+    if (!fn) {
+        sendResponse({error: "Unknown action: " + msg.action});
+        return;
+    }
+
+    Promise.resolve(fn(msg.data))
+        .then(res => sendResponse({ok: true, data: res}))
+        .catch(err => sendResponse({ok: false, error: err.toString()}));
+
+    return true; // 异步
 });
 
 
-connectWs();
