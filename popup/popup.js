@@ -58,8 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const data = await resp.json();
-
+            console.log("loginret:", data);
             if (data.code === 0) {
+                if (stayOnline.checked) {
+                    chrome.storage.local.set({"mail": body.mail});
+                    chrome.storage.local.set({"token": data.data.token});
+                }
                 alert(data.echo);
             } else {
                 alert(data.echo || "登录失败");
