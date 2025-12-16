@@ -61,9 +61,10 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("loginret:", data);
             if (data.code === 0) {
                 if (stayOnline.checked) {
-                    chrome.storage.local.set({"mail": body.mail});
-                    chrome.storage.local.set({"token": data.data.token});
+                    chrome.storage.sync.set({"mail": body.mail});
                 }
+                chrome.storage.sync.set({"uid": data.data.uid});
+                chrome.storage.sync.set({"token": data.data.token});
                 alert(data.echo);
             } else {
                 alert(data.echo || "登录失败");
