@@ -175,4 +175,26 @@ document.addEventListener("DOMContentLoaded", () => {
         loadCaptcha();
     };
 
+    const wsStatusSpan = document.getElementById("ws_status");
+
+// 监听 main.js 发来的消息
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+        if (msg.action === "wsStatus") {
+            wsStatusSpan.innerText = msg.status;
+        }
+    });
+
+    async function requestWSStatus() {
+        chrome.runtime.sendMessage({action: "getWSStatus"}, (res) => {
+            if (res?.status) {
+                wsStatusSpan.innerText = res.status;
+            }
+        });
+    }
+
+// popup 打开时
+    document.addEventListener("DOMContentLoaded", () => {
+        requestWSStatus();
+    });
+
 });
