@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
     init();
 
     async function init() {
-
         const {uid, token} = await chrome.storage.sync.get(["uid", "token"]);
         // console.log("init:", uid, token);
         if (uid && token) {
