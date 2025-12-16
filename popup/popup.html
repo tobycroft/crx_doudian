@@ -116,6 +116,14 @@
         #btnLogout:hover {
             background: #dd6161;
         }
+
+        #btnWS {
+            background: green;
+        }
+
+        #btnWS:hover {
+            background: darkgreen;
+        }
     </style>
 </head>
 
@@ -155,6 +163,13 @@
         <span id="switch_status"></span>
     </div>
     <button id="btnStatus">抖店-开/关</button>
+
+    <h3>Websocket状态</h3>
+    <div>链接状态：
+        <span id="ws_status"></span>
+    </div>
+    <button id="btnWS">WS开关</button>
+
 </div>
 
 <script src="popup.js"></script>
