@@ -28,10 +28,10 @@ Actions.toggleWS = () => {
 };
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.action === "connectWs") {
-        connectWs();
-        sendResponse({ok: true});
-    }
+    // if (msg.action === "connectWs") {
+    //     connectWs();
+    //     sendResponse({ok: true});
+    // }
 
     const fn = Actions[msg.action];
 
