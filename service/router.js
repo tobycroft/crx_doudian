@@ -1,18 +1,18 @@
 async function router(data) {
-    console.log("Routing data:", data);
+    // console.log("Routing data:", data);
     const json = JSON.parse(data)
     switch (json.route) {
         case "route":
-            break
+            break;
 
         case "login":
-            logStatusRet(json.echo)
+            logStatusRet(json.echo);
             // if (json.code === 0) {
             //     console.log("登录成功")
             // } else {
             //     console.log("登录失败：", json.echo)
             // }
-            break
+            break;
 
         case "ping":
         case "pong":
@@ -24,6 +24,11 @@ async function router(data) {
                     }))
                 }, 10000)
             }
+            break;
+
+        default:
+            console.log("Unknown route:", json.route);
+            break;
     }
 }
 
