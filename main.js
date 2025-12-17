@@ -9,42 +9,45 @@ importScripts(
 const Actions = {
     fetchOrders,
     checkLogin,
-    connectWs,
+    connectWs: async () => {
+        await ensureOffscreen();
+        chrome.runtime.sendMessage({ target: "offscreen", action: "connectWs" });
+    },
 
-};
-Actions.getWSStatus = () => {
-    return wsStatus;
-};
+    toggleWS: async () => {
+        await ensureOffscreen();
+        chrome.runtime.sendMessage({ target: "offscreen", action: "toggleWS" });
+    },
 
-Actions.toggleWS = () => {
-    if (ws) {
-        ws.close();
-        ws = null;
-        wsStatus = "disconnected";
-    } else {
-        connectWs();
+    getWSStatus: async () => {
+        await ensureOffscreen();
+        chrome.runtime.sendMessage({ target: "offscreen", action: "getWSStatus" });
     }
-    return wsStatus;
 };
+
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    // if (msg.action === "connectWs") {
-    //     connectWs();
-    //     sendResponse({ok: true});
-    // }
-
     const fn = Actions[msg.action];
-
     if (!fn) {
-        sendResponse({error: "Unknown action: " + msg.action});
+        sendResponse({ error: "Unknown action" });
         return;
     }
 
     Promise.resolve(fn(msg.data))
-        .then(res => sendResponse({ok: true, data: res}))
-        .catch(err => sendResponse({ok: false, error: err.toString()}));
+        .then(res => sendResponse({ ok: true, data: res }))
+        .catch(err => sendResponse({ ok: false, error: err.toString() }));
 
-    return true; // 异步
+    return true;
 });
 
 
+async function ensureOffscreen() {
+    const exists = await chrome.offscreen.hasDocument();
+    if (exists) return;
+
+    await chrome.offscreen.createDocument({
+        url: "offscreen/offscreen.html",
+        reasons: ["BLOBS"],
+        justification: "Keep WebSocket alive"
+    });
+}
