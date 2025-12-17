@@ -32,7 +32,7 @@ const Actions = {
         router(data);
     },
     ws_err: async (data) => {
-        console.error("WS error:", data);
+        console.log("WS error:", data);
     },
 };
 
