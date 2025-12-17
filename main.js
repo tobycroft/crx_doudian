@@ -3,7 +3,6 @@ console.log("后台启动");
 importScripts(
     "service/fetchOrders.js",
     "service/checkLogin.js",
-    "service/connectWs.js"
 );
 
 const Actions = {
@@ -11,31 +10,36 @@ const Actions = {
     checkLogin,
     connectWs: async () => {
         await ensureOffscreen();
-        chrome.runtime.sendMessage({ target: "offscreen", action: "connectWs" });
+        chrome.runtime.sendMessage({target: "offscreen", action: "connectWs"});
     },
 
     toggleWS: async () => {
         await ensureOffscreen();
-        chrome.runtime.sendMessage({ target: "offscreen", action: "toggleWS" });
+        chrome.runtime.sendMessage({target: "offscreen", action: "toggleWS"});
     },
 
     getWSStatus: async () => {
         await ensureOffscreen();
-        chrome.runtime.sendMessage({ target: "offscreen", action: "getWSStatus" });
-    }
+        chrome.runtime.sendMessage({target: "offscreen", action: "getWSStatus"});
+    },
+
+    getAuthForWS: async () => {
+        const {uid, token} = await chrome.storage.sync.get(["uid", "token"]);
+        return {uid, token};
+    },
 };
 
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     const fn = Actions[msg.action];
     if (!fn) {
-        sendResponse({ error: "Unknown action" });
+        sendResponse({error: "Unknown action"});
         return;
     }
 
     Promise.resolve(fn(msg.data))
-        .then(res => sendResponse({ ok: true, data: res }))
-        .catch(err => sendResponse({ ok: false, error: err.toString() }));
+        .then(res => sendResponse({ok: true, data: res}))
+        .catch(err => sendResponse({ok: false, error: err.toString()}));
 
     return true;
 });
