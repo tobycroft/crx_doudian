@@ -15,15 +15,18 @@ function connectWs() {
         broadcast();
 
         const {uid, token} = await requestAuth();
+        console.log("connecting", wsStatus, uid, token)
         if (uid && token) {
-            console.log("logining")
+            wsStatus = "logining";
+            broadcast();
             ws.send(JSON.stringify({
                 type: "login",
                 uid,
                 token
             }));
-        }else{
-            console.log("logining failed");
+        } else {
+            wsStatus = "login fail";
+            broadcast();
         }
     };
 
@@ -71,9 +74,7 @@ function broadcast() {
 }
 
 async function requestAuth() {
-    return new Promise((resolve) => {
-        chrome.runtime.sendMessage({
-            action: "getAuthForWS"
-        }, resolve);
-    });
+    const res = await chrome.runtime.sendMessage({ action: "getAuthForWS" });
+    console.log("auth res:", res);
+    return res;
 }

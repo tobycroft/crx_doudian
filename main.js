@@ -24,22 +24,20 @@ const Actions = {
     },
 
     getAuthForWS: async () => {
-        const {uid, token} = await chrome.storage.sync.get(["uid", "token"]);
-        return {uid, token};
+        const { uid, token } = await chrome.storage.sync.get(["uid", "token"]);
+        // console.log("getAuthForWS:", uid, token);
+        return { uid, token };
     },
 };
 
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     const fn = Actions[msg.action];
-    if (!fn) {
-        sendResponse({error: "Unknown action"});
-        return;
-    }
+    if (!fn) return;
 
     Promise.resolve(fn(msg.data))
-        .then(res => sendResponse({ok: true, data: res}))
-        .catch(err => sendResponse({ok: false, error: err.toString()}));
+        .then(res => sendResponse(res))
+        .catch(err => sendResponse({ error: err.toString() }));
 
     return true;
 });
