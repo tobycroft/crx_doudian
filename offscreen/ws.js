@@ -1,31 +1,32 @@
 const WS_URL = "ws://127.0.0.1";
 let ws = null;
-let wsStatus = "disconnected";
+let wsStatus = "未连接服务器，请点击下方连接";
+let logStatus = "还未完成身份验证";
 
 function connectWs() {
     if (ws && ws.readyState === WebSocket.OPEN) return;
 
-    wsStatus = "connecting";
+    wsStatus = "连接中……请稍候……";
     broadcast();
 
     ws = new WebSocket(WS_URL);
 
     ws.onopen = async () => {
-        wsStatus = "connected";
+        wsStatus = "连接服务器成功";
         broadcast();
 
         const {uid, token} = await requestAuth();
-        console.log("connecting", wsStatus, uid, token)
         if (uid && token) {
-            wsStatus = "logining";
+            logStatus = "身份验证中……请稍候……";
             broadcast();
             ws.send(JSON.stringify({
-                type: "login",
-                uid,
-                token
-            }));
+                    type: "login",
+                    uid: uid,
+                    token: token
+                })
+            );
         } else {
-            wsStatus = "login fail";
+            logStatus = "本地uidtoken不存在，无法完成身份验证";
             broadcast();
         }
     };
@@ -71,10 +72,14 @@ function broadcast() {
         action: "wsStatus",
         status: wsStatus
     });
+    chrome.runtime.sendMessage({
+        action: "logStatus",
+        status: logStatus
+    })
 }
 
 async function requestAuth() {
-    const res = await chrome.runtime.sendMessage({ action: "getAuthForWS" });
+    const res = await chrome.runtime.sendMessage({action: "getAuthForWS"});
     console.log("auth res:", res);
     return res;
 }
