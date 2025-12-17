@@ -3,6 +3,7 @@ console.log("后台启动");
 importScripts(
     "service/fetchOrders.js",
     "service/checkLogin.js",
+    "service/router.js",
 );
 
 const Actions = {
@@ -24,9 +25,14 @@ const Actions = {
     },
 
     getAuthForWS: async () => {
-        const { uid, token } = await chrome.storage.sync.get(["uid", "token"]);
-        // console.log("getAuthForWS:", uid, token);
-        return { uid, token };
+        const {uid, token} = await chrome.storage.sync.get(["uid", "token"]);
+        return {uid, token};
+    },
+    ws_message: async (data) => {
+        router(data);
+    },
+    ws_err: async (data) => {
+        console.error("WS error:", data);
     },
 };
 
@@ -37,7 +43,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
     Promise.resolve(fn(msg.data))
         .then(res => sendResponse(res))
-        .catch(err => sendResponse({ error: err.toString() }));
+        .catch(err => sendResponse({error: err.toString()}));
 
     return true;
 });

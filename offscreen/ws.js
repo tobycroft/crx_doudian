@@ -12,7 +12,7 @@ function connectWs() {
     ws = new WebSocket(WS_URL);
 
     ws.onopen = async () => {
-        wsStatus = "连接服务器成功";
+        wsStatus = "☑️连接服务器成功";
         broadcast();
 
         const {uid, token} = await requestAuth();
@@ -20,9 +20,9 @@ function connectWs() {
             logStatus = "身份验证中……请稍候……";
             broadcast();
             ws.send(JSON.stringify({
-                    type: "login",
-                    uid: uid,
-                    token: token
+                    route: "login",
+                    uid,
+                    token
                 })
             );
         } else {
@@ -33,17 +33,21 @@ function connectWs() {
 
     ws.onmessage = (evt) => {
         try {
-            const msg = JSON.parse(evt.data);
-            if (msg.type === "login_ack" && msg.ok) {
-                wsStatus = "authenticated";
-                broadcast();
-            }
-        } catch {
+            chrome.runtime.sendMessage({
+                action: "ws_message",
+                data: evt.data
+            });
+        } catch (e) {
+            chrome.runtime.sendMessage({
+                action: "ws_err",
+                data: e.toString()
+            });
         }
     };
 
     ws.onclose = () => {
-        wsStatus = "disconnected";
+        wsStatus = "❌WS服务已断开稍后会自动重连";
+        logStatus = "❌等待重连后再次验证";
         broadcast();
         ws = null;
         setTimeout(connectWs, 5000);
@@ -52,7 +56,6 @@ function connectWs() {
 
 chrome.runtime.onMessage.addListener((msg) => {
     if (msg.target !== "offscreen") return;
-
     switch (msg.action) {
         case "connectWs":
             connectWs();
@@ -64,6 +67,18 @@ chrome.runtime.onMessage.addListener((msg) => {
         case "getWSStatus":
             broadcast();
             break;
+        //核心发出消息的数据接口
+        case "ws_send":
+            console.log("ws send:", msg.data);
+            try {
+                ws.send(msg.data);
+            } catch (e) {
+                chrome.runtime.sendMessage({
+                    action: "ws_err",
+                    data: e.toString()
+                });
+            }
+            break
     }
 });
 

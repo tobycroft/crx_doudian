@@ -182,10 +182,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const wsStatusSpan = document.getElementById("ws_status");
+    const wsLoginSpan = document.getElementById("ws_login");
 
     chrome.runtime.onMessage.addListener((msg) => {
-        if (msg.action === "wsStatus") {
-            wsStatusSpan.innerText = msg.status;
+        switch (msg.action) {
+            case "wsStatus":
+                wsStatusSpan.innerText = msg.status;
+                break
+            case "logStatus":
+                wsLoginSpan.innerText = msg.status;
+                break
+
         }
     });
 
