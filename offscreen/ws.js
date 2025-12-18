@@ -1,4 +1,4 @@
-const WS_URL = "ws://127.0.0.1";
+const WS_URL = "ws://opc.tuuz.ltd";
 let ws = null;
 let wsStatus = "未连接服务器，请点击下方连接";
 let logStatus = "还未完成身份验证";
