@@ -19,6 +19,7 @@ function connectWs() {
         if (uid && token) {
             logStatus = "身份验证中……请稍候……";
             broadcast();
+            console.log("登录动作")
             ws.send(JSON.stringify({
                     route: "login",
                     uid,
@@ -67,6 +68,12 @@ chrome.runtime.onMessage.addListener((msg) => {
         case "getWSStatus":
             broadcast();
             break;
+        case "wsStatus":
+            wsStatus = msg.status;
+            break
+        case "logStatus":
+            logStatus = msg.status;
+            break
         //核心发出消息的数据接口
         case "ws_send":
             console.log("ws send:", msg.data);

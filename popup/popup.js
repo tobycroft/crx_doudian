@@ -187,9 +187,11 @@ document.addEventListener("DOMContentLoaded", () => {
     chrome.runtime.onMessage.addListener((msg) => {
         switch (msg.action) {
             case "wsStatus":
+                wsStatus = msg.status;
                 wsStatusSpan.innerText = msg.status;
                 break
             case "logStatus":
+                logStatus = msg.status;
                 wsLoginSpan.innerText = msg.status;
                 break
 

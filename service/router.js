@@ -34,6 +34,7 @@ async function router(data) {
 
 function logStatusRet(ret) {
     return chrome.runtime.sendMessage({
+        target: "offscreen",
         action: "logStatus",
         status: ret
     })
