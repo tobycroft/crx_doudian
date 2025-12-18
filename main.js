@@ -3,7 +3,7 @@ console.log("后台启动");
 importScripts(
     "service/fetchOrders.js",
     "service/checkLogin.js",
-    "service/router.js",
+    "router.js",
 );
 
 const Actions = {

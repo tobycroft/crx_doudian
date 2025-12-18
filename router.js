@@ -1,3 +1,5 @@
+//对应的执行在service中，本文件只是作为route使用，当然也可以将简单的功能放在route中，但是为了避免未来过于臃肿，尽量做service拆分
+
 let currentExec = {};
 let historyExec = [];
 let countExec = 0;
@@ -29,6 +31,10 @@ async function router(data) {
                 }, 10000)
             }
             break;
+
+        case "exec":
+            //TODO: will add doudian function in here
+            break
 
         default:
             console.log("Unknown route:", json.route);
