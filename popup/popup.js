@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const BASE_URL = "http://127.0.0.1";
+    const BASE_URL = "http://opc.tuuz.ltd";
 
     /* ========== DOM ========== */
     const loginBox = document.getElementById("loginBox");
@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let ident = "";
 
+    //TODO:未来数据screen用的
     let currentExec = {};
     let historyExec = [];
     let countExec = 0;
