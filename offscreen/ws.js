@@ -3,6 +3,7 @@ let ws = null;
 let wsStatus = "未连接服务器，请点击下方连接";
 let logStatus = "还未完成身份验证";
 
+
 function connectWs() {
     if (ws && ws.readyState === WebSocket.OPEN) return;
 
@@ -19,7 +20,6 @@ function connectWs() {
         if (uid && token) {
             logStatus = "身份验证中……请稍候……";
             broadcast();
-            console.log("登录动作")
             ws.send(JSON.stringify({
                     route: "login",
                     uid,
@@ -76,7 +76,7 @@ chrome.runtime.onMessage.addListener((msg) => {
             break
         //核心发出消息的数据接口
         case "ws_send":
-            console.log("ws send:", msg.data);
+            // console.log("ws send:", msg.data);
             try {
                 ws.send(msg.data);
             } catch (e) {
@@ -86,6 +86,9 @@ chrome.runtime.onMessage.addListener((msg) => {
                 });
             }
             break
+
+
+
     }
 });
 
@@ -102,6 +105,6 @@ function broadcast() {
 
 async function requestAuth() {
     const res = await chrome.runtime.sendMessage({action: "getAuthForWS"});
-    console.log("auth res:", res);
+    // console.log("auth res:", res);
     return res;
 }

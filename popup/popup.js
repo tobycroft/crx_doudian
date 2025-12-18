@@ -21,6 +21,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let ident = "";
 
+    let currentExec = {};
+    let historyExec = [];
+    let countExec = 0;
+
     /* ========== 初始化入口 ========== */
     init();
 
@@ -194,6 +198,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 logStatus = msg.status;
                 wsLoginSpan.innerText = msg.status;
                 break
+
+            case "exec":
+                currentExec = msg.status;
+                countExec++;
+                historyExec.push(msg.status)
+                if (historyExec.length > 10) {
+                    historyExec.shift();
+                }
+                break
+
 
         }
     });

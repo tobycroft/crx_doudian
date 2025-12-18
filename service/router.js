@@ -1,3 +1,7 @@
+let currentExec = {};
+let historyExec = [];
+let countExec = 0;
+
 async function router(data) {
     // console.log("Routing data:", data);
     const json = JSON.parse(data)
@@ -44,6 +48,14 @@ function sendData(data) {
     return chrome.runtime.sendMessage({
         target: "offscreen",
         action: "ws_send",
+        data: data
+    })
+}
+
+function execCommand(data) {
+    return chrome.runtime.sendMessage({
+        target: "offscreen",
+        action: "exec",
         data: data
     })
 }
