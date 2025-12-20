@@ -33,6 +33,9 @@ async function router(data) {
             break;
 
         case "exec":
+            currentExec = json.echo;
+            historyExec.push(json.echo);
+            countExec++;
             //TODO: will add doudian function in here
             break
 
