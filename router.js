@@ -34,6 +34,7 @@ async function router(data) {
 
         case "exec":
             //TODO: will add doudian function in here
+            const command=json.data;
             break
 
         default:
